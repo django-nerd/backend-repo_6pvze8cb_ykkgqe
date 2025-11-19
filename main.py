@@ -35,6 +35,9 @@ class CreateActionRequest(ImpactAction):
 class CreateProofRequest(BaseModel):
     action_id: str
     salt: Optional[str] = None
+    signer_address: Optional[str] = None
+    signature: Optional[str] = None
+    chain_id: Optional[int] = None
 
 
 @app.get("/")
@@ -131,6 +134,9 @@ def attest_action(action_id: str, body: CreateProofRequest):
         "proof_hash": phash,
         "tx_id": tx_id,
         "network": "sim-chain",
+        "signer_address": body.signer_address,
+        "signature": body.signature,
+        "chain_id": body.chain_id,
         "created_at": now,
         "updated_at": now,
     }
@@ -149,6 +155,13 @@ def list_proofs():
     docs = get_documents("proof", {}, limit=100)
     for d in docs:
         d["id"] = str(d.pop("_id"))
+        # Normalize optional fields
+        if "signer_address" not in d:
+            d["signer_address"] = None
+        if "signature" not in d:
+            d["signature"] = None
+        if "chain_id" not in d:
+            d["chain_id"] = None
     return docs
 
 

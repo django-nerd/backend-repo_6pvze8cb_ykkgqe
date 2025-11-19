@@ -46,6 +46,9 @@ class Proof(BaseModel):
     proof_hash: str = Field(..., description="Deterministic hash of canonicalized action payload + salt")
     tx_id: str = Field(..., description="Simulated transaction id")
     network: Literal["sim-chain", "testnet", "mainnet"] = Field("sim-chain", description="Target chain (simulated)")
+    signer_address: Optional[str] = Field(None, description="Address of the signer who approved the attestation")
+    signature: Optional[str] = Field(None, description="Wallet signature over an attestation message")
+    chain_id: Optional[int] = Field(None, description="EVM chain id if applicable")
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
